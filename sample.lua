@@ -156,6 +156,7 @@ for i=1, opt.length do
     prediction = lst[#lst] -- last element holds the log probabilities
 
     io.write(ivocab[prev_char[1]])
+    io.write(' ')
 end
 io.write('\n') io.flush()
 
