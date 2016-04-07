@@ -127,7 +127,7 @@ function WordSplitLMMinibatchLoader.text_to_tensor(in_textfile, out_vocabfile, o
     local timer = torch.Timer()
 
     print('loading text file...')
-    local counter = 0
+
     local rawdata
     local tot_len = 0
     local f = assert(io.open(in_textfile, "r"))
@@ -140,7 +140,9 @@ function WordSplitLMMinibatchLoader.text_to_tensor(in_textfile, out_vocabfile, o
     repeat
         for word in rawdata:gmatch'%g+' do
            word = string.lower(word)
-           if not unordered[word] then unordered[word] = true end
+           if not unordered[word] then
+              unordered[word] = true 
+           end
            tot_len = tot_len + 1
         end
         rawdata = f:read()
@@ -148,9 +150,10 @@ function WordSplitLMMinibatchLoader.text_to_tensor(in_textfile, out_vocabfile, o
     f:close()
     -- sort into a table (i.e. keys become 1..N)
     local ordered = {}
+    local counter = 0
     for word in pairs(unordered) do
        counter = counter + 1
-       ordered[counter + 1] = word
+       ordered[counter] = word
     end
     table.sort(ordered)
     -- invert `ordered` to create the word->int mapping
@@ -174,7 +177,7 @@ function WordSplitLMMinibatchLoader.text_to_tensor(in_textfile, out_vocabfile, o
        rawdata = f:read()
     until not rawdata
     f:close()
-
+    print('Words: ' .. currlen)
     -- save output preprocessed files
     print('saving ' .. out_vocabfile)
     torch.save(out_vocabfile, vocab_mapping)
