@@ -166,7 +166,7 @@ function WordSplitLMMinibatchLoader.text_to_tensor(in_textfile, out_vocabfile, o
     end
     -- construct a tensor with all the data
     print('putting data into tensor...')
-    local data = torch.ByteTensor(tot_len) -- store it into 1D first, then rearrange
+    local data = torch.ShortTensor(tot_len) -- store it into 1D first, then rearrange
     f = assert(io.open(in_textfile, "r"))
     local currlen = 0
 
@@ -183,6 +183,7 @@ function WordSplitLMMinibatchLoader.text_to_tensor(in_textfile, out_vocabfile, o
     until not rawdata
     f:close()
     print('Words: ' .. currlen)
+    print('Document: ' .. tot_len .. ' = ' .. currlen)
     -- save output preprocessed files
     print('saving ' .. out_vocabfile)
     torch.save(out_vocabfile, vocab_mapping)
