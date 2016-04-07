@@ -129,6 +129,7 @@ function WordSplitLMMinibatchLoader.text_to_tensor(in_textfile, out_vocabfile, o
     print('loading text file...')
 
     local rawdata
+    local line
     local tot_len = 0
     local f = assert(io.open(in_textfile, "r"))
 
@@ -138,7 +139,9 @@ function WordSplitLMMinibatchLoader.text_to_tensor(in_textfile, out_vocabfile, o
     local unordered = {}
     rawdata = f:read()
     repeat
-        for word in rawdata:gmatch'%g+' do
+       line = rawdata:gsub('(%p)', ' %1 ')
+       line = line:gsub('(%d)', '#')
+        for word in line:gmatch'%g+' do
            word = string.lower(word)
            if not unordered[word] then
               unordered[word] = true 
@@ -169,7 +172,9 @@ function WordSplitLMMinibatchLoader.text_to_tensor(in_textfile, out_vocabfile, o
 
     rawdata = f:read()
     repeat
-       for word in rawdata:gmatch'%g+' do
+       line = rawdata:gsub('(%p)', ' %1 ')
+       line = line:gsub('(%d)', '#')
+       for word in line:gmatch'%g+' do
           word = string.lower(word)
           currlen = currlen + 1
           data[currlen] = vocab_mapping[word]
